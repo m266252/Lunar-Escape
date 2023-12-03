@@ -11,7 +11,7 @@ class Space_Girl(pygame.sprite.Sprite):
         super().__init__()
 
         # Astronaut character
-        self.image = pygame.transform.scale(pygame.image.load('images/space_girl.png').convert(), (40, 40))
+        self.image = pygame.transform.scale(pygame.image.load('images/sw1.png').convert(), (50, 50))
         #self.image.set_colorkey((255, 255, 255))
 
 

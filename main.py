@@ -152,9 +152,13 @@ while running:
         # Shooting with left clicks and come from the center
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:              # Shoot with left clicks
                 projectile = Projectile(astro.rect.x + 37, astro.rect.y + 37, *event.pos)
+
+                # Draws the projectiles on the screen
                 projectiles.add(projectile)
-                projectile.draw(scr)                          # Draws the projectile
-                shoot_sound.play()                            #Plays the shooting sounds
+                projectile.draw(scr)
+
+                #Plays shooting sound with user clicks
+                shoot_sound.play()
 
 
         # Copy background to screen.
@@ -165,10 +169,6 @@ while running:
             hit_rocks = pygame.sprite.spritecollide(projectile, rocks, True)
             if hit_rocks:
                 projectiles.remove(projectile)
-
-        # Draw American flag
-        #flag.image = pygame.transform.scale(pygame.image.load('images/flag.png'),(40,40)).convert()
-        #scr.blit(flag, (0, screen_wid - flag.get_height()))  # Adjust the position as needed
 
         # Updates position
         astro.update_position()
@@ -195,13 +195,12 @@ while running:
             hit_sound.play()
             print("Ouch! Life remaining:", Life)
 
-
-
         # Check for player collision with hearts
         result = pygame.sprite.spritecollide(astro, hearts, True)
         if result:
             Life += 1
 
+        #Loop to respawn hearts on the screen
         for heart in hearts:
             if heart.rect.top > screen_hgt:
                 hearts.remove(heart)
@@ -231,7 +230,7 @@ while running:
         pygame.display.flip()
         clock.tick(60)
 
-
+    # Game state will follow these parameters if user selects multiplayer
     if current_state == MULTIPLAYER:
         if Life <= 0 and SG_Life <= 0:
             current_state = GAME_OVER_M
@@ -243,11 +242,11 @@ while running:
 
         # Shooting with left clicks and come from the center
             if len(player1) == 1:
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:              # Shoot with left clicks
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     projectile = Projectile(astro.rect.x + 37, astro.rect.y + 37, *event.pos)
                     projectiles.add(projectile)
-                    projectile.draw(scr)                          # Draws the projectile
-                    shoot_sound.play()                            #Plays the shooting sounds
+                    projectile.draw(scr)
+                    shoot_sound.play()
 
 
         # Copy background to screen.
@@ -259,11 +258,8 @@ while running:
             if hit_rocks:
                 projectiles.remove(projectile)
 
-        # Draw American flag
-        #flag.image = pygame.transform.scale(pygame.image.load('images/flag.png'),(40,40)).convert()
-        #scr.blit(flag, (0, screen_wid - flag.get_height()))  # Adjust the position as needed
 
-        # Updates position
+        # Updates players position
         for player in player1:
             player.update_position()
         for player in player2:
@@ -283,6 +279,7 @@ while running:
         if current_time - am_time_since_last_heart >= 100000:
             Life -= 1
             am_time_since_last_heart = current_time
+
         #Decrease sg lives as time passes
         current_time = pygame.time.get_ticks()
         if current_time - sg_time_since_last_heart >= 100000:
@@ -305,6 +302,8 @@ while running:
                 SG_Life -= 1
                 hit_sound.play()
                 print("Ouch! Life remaining:", Life)
+
+                # Remove SG sprite once her lives reach 0
                 if SG_Life <= 0:
                     sg.kill()
 
@@ -320,6 +319,7 @@ while running:
             if result:
                 SG_Life += 1
 
+        #Respawn hearts on screen
         for heart in hearts:
             if heart.rect.top > screen_hgt:
                 hearts.remove(heart)
@@ -368,6 +368,7 @@ while running:
         pygame.display.flip()
         clock.tick(60)
 
+    #Follow these game parameters once single player game ends
     if current_state == GAME_OVER:
         print('single player game over')
         # show game over message and their final game score
@@ -382,7 +383,7 @@ while running:
         while not key_pressed:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:        #enter key
+                    if event.key == pygame.K_RETURN:
                         current_state = MENU
                         key_pressed = True
 
@@ -393,23 +394,25 @@ while running:
         game_over = pygame.mixer.Sound("Sounds/game_over.ogg")
         game_over.play()
 
-
+    #Follow these game parameters once the multiplayer game reaches the game over screen
     if current_state == GAME_OVER_M:
         print('multiplayer game over')
         # show game over message and their final game score
+        #Display this screen if AM won
         if score > sg_score:
             message = score_font.render("ASTRO MAN WINS!!", True, (255, 0, 0))
             scr.blit(message, (screen_wid / 2 - message.get_width() / 2, screen_hgt / 2))
             score_text = score_font.render(f"Score: {score} ", True, (0, 0, 0))
             scr.blit(score_text,
                      (screen_wid / 2 - score_text.get_width() / 2, screen_hgt / 2 - 2 * score_text.get_height() / 2))
+        #Display this screen if SG won
         elif score < sg_score:
             message = score_font.render("SPACE GIRL WINS!!", True, (255, 0, 0))
             scr.blit(message, (screen_wid / 2 - message.get_width() / 2, screen_hgt / 2))
             score_text = score_font.render(f"Score: {sg_score} ", True, (0, 0, 0))
             scr.blit(score_text,
                      (screen_wid / 2 - score_text.get_width() / 2, screen_hgt / 2 - 2 * score_text.get_height() / 2))
-
+        #Display this game over screen if DRAW
         else:
             message = score_font.render("DRAW!!", True, (255, 0, 0))
             scr.blit(message, (screen_wid / 2 - message.get_width() / 2, screen_hgt / 2))
