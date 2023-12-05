@@ -28,10 +28,8 @@ play.set_colorkey((255, 255, 255))
 
 # Create a rectangle for multiplayer option
 multiplayer_rect = pygame.Rect((screen_wid // 2 - 110, screen_hgt // 2 + 65, 220, 50))
-
 font = pygame.font.Font('Fonts/Black_Crayon.ttf', 35)
 multiplayer_text = font.render("Multiplayer", True, (0,0,0)) # Black text
-#multiplayer_rect = multiplayer_text.get_rect(midtop=(screen_wid // 2, play_button_rect.bottom + 30))
 
 
 # Create a rectangle for Lunar Escape
@@ -39,6 +37,7 @@ lunar_escape_font = pygame.font.Font('Fonts/Black_Crayon.ttf', 70)
 lunar_escape_text = lunar_escape_font.render('Lunar Escape', True, (0,0,0))
 lunar_escape_rect = lunar_escape_text.get_rect(center=(screen_wid // 2, screen_hgt // 4))
 
+# Establish game states
 MENU = "menu"
 SINGLE = "singleplayer"
 MULTIPLAYER = "multiplayer"
@@ -56,12 +55,13 @@ while not stop_loop:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        #TODO: make two variations of collision points to go to either of the two game states
+
+        # Take user from menu screen to single player game
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if play_button_rect.collidepoint(event.pos):
                 current_state = SINGLE
                 stop_loop = True
-
+        # Take user from menu screen to multiplayer game
             elif multiplayer_rect.collidepoint(event.pos):
                 current_state = MULTIPLAYER
                 stop_loop = True
@@ -76,6 +76,7 @@ while not stop_loop:
 
         # Small time delay
         time.sleep(0.10)
+
 
 # Set image background
 background = pygame.image.load("images/moon1.png").convert()
@@ -132,10 +133,8 @@ MULTIPLAYER = "multiplayer"
 GAME_OVER = 'game_over'
 GAME_OVER_M = 'who won'
 
-
 #Get mouse posiiton and check for events
 mouse_pos = pygame.mouse.get_pos()
-
 
 # Main loop
 running = True
@@ -209,7 +208,7 @@ while running:
         #make score based on how long you survive
         current_time = pygame.time.get_ticks()
         if current_time - am_time_since_last_score >= 1000:
-            score += 10
+            score += 5
             am_time_since_last_score = current_time
 
         # Draw figures on the screen
@@ -296,6 +295,7 @@ while running:
                 if Life <= 0:
                     astro.kill()
 
+        #Remove a SG life every time she collides with a rock
         if SG_Life > 0:
             hit_rocks = pygame.sprite.spritecollide(sg, rocks, True)
             if hit_rocks:
@@ -332,13 +332,13 @@ while running:
         current_time = pygame.time.get_ticks()
         if len(player1) > 0:
             if current_time - am_time_since_last_score >= 1000:
-                score += 10
+                score += 5
                 am_time_since_last_score = current_time
 
         if len(player2) > 0:
             current_time = pygame.time.get_ticks()
             if current_time - sg_time_since_last_score >= 1000:
-                sg_score += 10
+                sg_score += 5
                 sg_time_since_last_score = current_time
 
         # Draw figures on the screen
@@ -396,8 +396,11 @@ while running:
 
     #Follow these game parameters once the multiplayer game reaches the game over screen
     if current_state == GAME_OVER_M:
-        print('multiplayer game over')
+
         # show game over message and their final game score
+        print('multiplayer game over')
+
+
         #Display this screen if AM won
         if score > sg_score:
             message = score_font.render("ASTRO MAN WINS!!", True, (255, 0, 0))
@@ -405,6 +408,7 @@ while running:
             score_text = score_font.render(f"Score: {score} ", True, (0, 0, 0))
             scr.blit(score_text,
                      (screen_wid / 2 - score_text.get_width() / 2, screen_hgt / 2 - 2 * score_text.get_height() / 2))
+
         #Display this screen if SG won
         elif score < sg_score:
             message = score_font.render("SPACE GIRL WINS!!", True, (255, 0, 0))
@@ -412,6 +416,7 @@ while running:
             score_text = score_font.render(f"Score: {sg_score} ", True, (0, 0, 0))
             scr.blit(score_text,
                      (screen_wid / 2 - score_text.get_width() / 2, screen_hgt / 2 - 2 * score_text.get_height() / 2))
+
         #Display this game over screen if DRAW
         else:
             message = score_font.render("DRAW!!", True, (255, 0, 0))
@@ -440,16 +445,12 @@ while running:
     if current_state == MENU:
         print('menu')
 
-
 #update the display
 pygame.display.flip()
 
 #play game over sound effect
 game_over = pygame.mixer.Sound("Sounds/game_over.ogg")
 game_over.play()
-
-
-
 
 #wait for user to exit the game
 while True:

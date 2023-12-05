@@ -29,6 +29,7 @@ class Rock(pygame.sprite.Sprite):
 # Call all rocks as a group to appear on the screen
 rocks = pygame.sprite.Group()
 
+# Randomly spawn rocks across the game screen as they go off the screen
 def add_rock(num_rocks):
     for _ in range(num_rocks):
         rocks.add(Rock(random.randint(0, screen_wid),

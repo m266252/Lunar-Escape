@@ -3,8 +3,6 @@ import math
 from Game_Parameters import *
 
 
-
-
 class Space_Girl(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
@@ -59,7 +57,6 @@ class Projectile(pygame.sprite.Sprite):
         self.target_x = target_x
         self.target_y = target_y
         self.spd = 7
-
 
 
     def rock_collisions(self, rock_group):

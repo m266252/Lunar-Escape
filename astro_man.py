@@ -65,7 +65,6 @@ class Projectile(pygame.sprite.Sprite):
         self.spd = 7
 
 
-
     def rock_collisions(self, rock_group):
         return pygame.sprite.spritecollide(self, rock_group, True)
 
@@ -91,5 +90,7 @@ class Projectile(pygame.sprite.Sprite):
         # Draws the projectile on the screen
         surface.blit(self.image, self.rect.center)
 
+
+# Establish projectiles and AM as group sprites
 projectiles = pygame.sprite.Group()
 player1 = pygame.sprite.Group()
